@@ -14,7 +14,7 @@ void *sender_handler(void *arg) {
     bool leave = false;
 
     while (1) {
-        printf("Enter message ('JOIN', 'LEAVE', 'SHUTDOWN', 'SHUTDOWN_ALL' or any message): ");
+        printf("Enter message ('JOIN', 'LEAVE', 'SHUTDOWN', 'SHUTDOWN_ALL' or any message): \n");
         if (fgets(input_buffer, sizeof(input_buffer), stdin) == NULL) {
             break;  // Exit loop on input error
         }
@@ -37,6 +37,7 @@ void *sender_handler(void *arg) {
         } 
         else {
             snprintf(output_buffer, sizeof(output_buffer), "NOTE:%s:%s", client_info.node->name, input_buffer);
+            printf("Enter message ('JOIN', 'LEAVE', 'SHUTDOWN', 'SHUTDOWN_ALL' or any message): \n");
         }
 
         // Send the message to the server

@@ -46,9 +46,9 @@ char* property_get_property(Properties* properties, char* key) {
 Properties* property_read_properties(char* properties_file_string)
 {
     FILE* properties_file;
-    char key[64];
-    char value[64];
-    char line[128];
+    char key[65];
+    char value[65];
+    char line[129];
     
     Properties* properties = property_list_new();
     Property* property_ptr;

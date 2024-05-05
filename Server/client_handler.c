@@ -69,8 +69,6 @@ void *talk_to_client(void *arg) {
         memset(buffer, 0, sizeof(buffer));
         int read_size = recv(client_socket_fd, buffer, sizeof(buffer), 0);
         if (read_size > 0) {
-            //printf("RECEIVED: %s", buffer);
-
             Message *received_msg = message_parse(buffer);
             if (received_msg) {
                 switch (received_msg->type) {
@@ -136,7 +134,6 @@ void *talk_to_client(void *arg) {
             printf("Client disconnected.\n");
             break;
         } else {
-            perror("recv failed");
             break;
         }
     }
@@ -149,7 +146,16 @@ void *talk_to_client(void *arg) {
 void broadcast_message(Message *msg, ClientInfo *sender) {
     pthread_mutex_lock(&server_state.client_list_mutex);  // Access the mutex from server_state
     char formatted_msg[512];
-    snprintf(formatted_msg, sizeof(formatted_msg), "%s: %s", msg->sender->name, msg->text);
+
+    if (msg->type == MSG_JOIN) {
+        snprintf(formatted_msg, sizeof(formatted_msg), "%s %s", msg->sender->name, "joined the chat!");
+    } else if (msg->type == MSG_LEAVE) {
+        snprintf(formatted_msg, sizeof(formatted_msg), "%s %s", msg->sender->name, "left the chat!");
+    } else if (msg->type == MSG_SHUTDOWN) {
+        snprintf(formatted_msg, sizeof(formatted_msg), "%s %s", msg->sender->name, "left the chat!");
+    } else {
+        snprintf(formatted_msg, sizeof(formatted_msg), "%s: %s", msg->sender->name, msg->text);
+    }
 
     for (int i = 0; i < server_state.client_count; i++) {
         if (server_state.clients[i].socket_fd != sender->socket_fd) {

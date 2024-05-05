@@ -14,7 +14,6 @@ void *receiver_handler(void *arg) {
 
     while ((read_size = recv(client_info.socket_fd, buffer, sizeof(buffer) - 1, 0)) > 0) {
         buffer[read_size] = '\0'; // Null-terminate the string
-        printf("RECEIVED: %s\n", buffer);
         if (strcmp(buffer, "SHUTDOWN_ALL") == 0) {
             printf("[Server] Shutdown command received.\n");
             exit(EXIT_SUCCESS);  // Exit the client as the server is shutting down
@@ -28,7 +27,6 @@ void *receiver_handler(void *arg) {
         printf("Server has closed the connection.\n");
         exit(EXIT_SUCCESS);
     } else if (read_size == -1) {
-        perror("recv failed");
         exit(EXIT_FAILURE);
     }
 
