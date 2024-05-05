@@ -20,6 +20,7 @@ void *receiver_handler(void *arg) {
         }
         
         printf("%s\n", buffer);
+        printf("Enter message ('JOIN', 'LEAVE', 'SHUTDOWN', 'SHUTDOWN_ALL' or any message): \n");
 
     }
 

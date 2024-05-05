@@ -37,7 +37,6 @@ void *sender_handler(void *arg) {
         } 
         else {
             snprintf(output_buffer, sizeof(output_buffer), "NOTE:%s:%s", client_info.node->name, input_buffer);
-            printf("Enter message ('JOIN', 'LEAVE', 'SHUTDOWN', 'SHUTDOWN_ALL' or any message): \n");
         }
 
         // Send the message to the server
