@@ -29,11 +29,20 @@ void start_server(const char *ip, int port) {
         exit(EXIT_FAILURE);
     }
 
-    // Attach socket to the port
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
-        perror("setsockopt");
+    // Attach socket to the port using SO_REUSEADDR only
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) {
+        perror("setsockopt SO_REUSEADDR");
         exit(EXIT_FAILURE);
     }
+
+    // Optionally, use SO_REUSEPORT if you know your system supports it
+    // This is not typically necessary unless you have a specific use case
+    #ifdef SO_REUSEPORT
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEPORT, &opt, sizeof(opt))) {
+        perror("setsockopt SO_REUSEPORT");
+        exit(EXIT_FAILURE);
+    }
+    #endif
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = inet_addr(ip);
