@@ -77,6 +77,11 @@ void *talk_to_client(void *arg) {
                         // Prevent the client from joining again
                         if (new_client != NULL){
 
+                            if (strcmp(received_msg->text, "RE-JOIN") == 0) {
+                                printf("Client %s re-joined from %s:%d.\n", received_msg->sender->name, client_ip, client_port);
+                                break;        
+                            }
+
                             printf("Already a chat member!\n");
                             break;
 
@@ -94,12 +99,13 @@ void *talk_to_client(void *arg) {
                     case MSG_LEAVE:
                         if(new_client == NULL)
                             break;
+                        
+                        if(strcmp(received_msg->text, "SKIP") == 0)
+                            break;
 
                         printf("Client %s left.\n", received_msg->sender->name);
                         broadcast_message(received_msg, new_client);
-                        remove_client(new_client->socket_fd);
-                        message_free(received_msg);
-                        return NULL; // End thread after client leaves
+                        break;
                     case MSG_SHUTDOWN:
                         if(new_client == NULL)
                             break;
@@ -111,6 +117,9 @@ void *talk_to_client(void *arg) {
                         return NULL; // End thread after client leaves
                     case MSG_NOTE:
                         if(new_client == NULL)
+                            break;
+
+                        if(strcmp(received_msg->text, "SKIP") == 0)
                             break;
 
                         printf("Note from %s: %s\n", received_msg->sender->name, received_msg->text);

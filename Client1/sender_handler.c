@@ -24,7 +24,12 @@ void *sender_handler(void *arg) {
 
         // Handle special commands
         if (strcmp(input_buffer, "JOIN") == 0) {
-            snprintf(output_buffer, sizeof(output_buffer), "JOIN:%s", client_info.node->name);
+            if(leave) {
+                snprintf(output_buffer, sizeof(output_buffer), "JOIN:%s:%s", client_info.node->name, "RE-JOIN");
+                leave = false;
+            } else {
+                snprintf(output_buffer, sizeof(output_buffer), "JOIN:%s", client_info.node->name);
+            }
         } else if (strcmp(input_buffer, "LEAVE") == 0) {
             snprintf(output_buffer, sizeof(output_buffer), "LEAVE:%s", client_info.node->name);
             leave = true;
@@ -36,7 +41,11 @@ void *sender_handler(void *arg) {
             shutdown = true;
         } 
         else {
-            snprintf(output_buffer, sizeof(output_buffer), "NOTE:%s:%s", client_info.node->name, input_buffer);
+            if(!leave) {
+                snprintf(output_buffer, sizeof(output_buffer), "NOTE:%s:%s", client_info.node->name, input_buffer);
+            } else {
+                snprintf(output_buffer, sizeof(output_buffer), "NOTE:%s:%s", client_info.node->name, "SKIP");
+            }
         }
 
         // Send the message to the server
@@ -47,8 +56,8 @@ void *sender_handler(void *arg) {
 
         if (shutdown)
             exit(EXIT_SUCCESS);
-        if(leave)
-            return (void*)2;
+        // if(leave)
+        //     return (void*)2;
 
     }
 
